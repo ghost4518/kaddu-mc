@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KadduMC – Survive. Build. Conquer.</title>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Exo+2:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #4ade1e;
+    --green-dark: #2db30d;
+    --green-glow: rgba(74,222,30,0.35);
+    --bg: #0a0f0a;
+    --surface: #111810;
+    --surface2: #16201a;
+    --border: rgba(74,222,30,0.15);
+    --text: #e8f5e0;
+    --muted: #7a9a6e;
+    --white: #ffffff;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 3rem;
+    height: 64px;
+    background: rgba(10,15,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 0.6rem;
+    text-decoration: none;
+  }
+  .nav-logo img {
+    width: 38px; height: 38px; border-radius: 8px;
+    border: 2px solid var(--green);
+    box-shadow: 0 0 10px var(--green-glow);
+    object-fit: cover;
+  }
+  .nav-logo span {
+    font-family: 'Russo One', sans-serif;
+    font-size: 1.15rem;
+    color: var(--white);
+    letter-spacing: 0.05em;
+  }
+  .nav-logo span b { color: var(--green); }
+  .nav-links {
+    display: flex; gap: 2rem; list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--green); }
+  .btn-join-nav {
+    background: transparent;
+    border: 1.5px solid var(--green);
+    color: var(--green);
+    padding: 0.45rem 1.3rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+  .btn-join-nav:hover {
+    background: var(--green);
+    color: #000;
+    box-shadow: 0 0 18px var(--green-glow);
+  }
+  .hamburger {
+    display: none;
+    flex-direction: column; gap: 5px; cursor: pointer;
+    background: none; border: none; padding: 4px;
+  }
+  .hamburger span {
+    display: block; width: 24px; height: 2px;
+    background: var(--green); border-radius: 2px;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+
+  /* ── HERO ── */
+  #home {
+    min-height: 100vh;
+    position: relative;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem 6rem;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 40%, rgba(74,222,30,0.08) 0%, transparent 70%),
+      linear-gradient(180deg, rgba(10,15,10,0.3) 0%, rgba(10,15,10,0.85) 60%, var(--bg) 100%);
+    z-index: 1;
+  }
+  .hero-bg-img {
+    position: absolute; inset: 0;
+    background:
+      url('https://images.unsplash.com/photo-1627856013091-fed6dc8a715d?w=1600&q=80') center/cover no-repeat;
+    z-index: 0; filter: brightness(0.35) saturate(0.6);
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 700px; }
+  .hero-logo {
+    width: 120px; height: 120px; border-radius: 50%;
+    border: 3px solid var(--green);
+    box-shadow: 0 0 40px var(--green-glow), 0 0 80px rgba(74,222,30,0.15);
+    object-fit: cover;
+    margin-bottom: 1.5rem;
+    animation: logoPulse 3s ease-in-out infinite;
+  }
+  @keyframes logoPulse {
+    0%,100% { box-shadow: 0 0 40px var(--green-glow), 0 0 80px rgba(74,222,30,0.15); }
+    50% { box-shadow: 0 0 60px rgba(74,222,30,0.6), 0 0 120px rgba(74,222,30,0.25); }
+  }
+  .hero-title {
+    font-family: 'Russo One', sans-serif;
+    font-size: clamp(3.5rem, 10vw, 7rem);
+    color: var(--white);
+    line-height: 0.95;
+    text-shadow: 0 0 30px rgba(0,0,0,0.8);
+    letter-spacing: -0.01em;
+  }
+  .hero-title .mc {
+    display: block;
+    color: var(--green);
+    text-shadow: 0 0 40px var(--green-glow);
+  }
+  .hero-tagline {
+    margin-top: 1rem;
+    font-family: 'Exo 2', sans-serif;
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+  .hero-tagline .accent { color: var(--green); }
+  .hero-sub {
+    margin-top: 0.6rem;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .hero-sub .highlight { color: var(--green); }
+  .hero-btns {
+    display: flex; gap: 1rem; justify-content: center;
+    margin-top: 2.2rem; flex-wrap: wrap;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--green);
+    color: #000;
+    font-weight: 800;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    border: none; cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px var(--green-glow);
+    font-family: 'Exo 2', sans-serif;
+  }
+  .btn-primary:hover {
+    background: #6aee3e;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(74,222,30,0.5);
+  }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: transparent;
+    color: var(--white);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    font-family: 'Exo 2', sans-serif;
+  }
+  .btn-secondary:hover {
+    border-color: var(--white);
+    background: rgba(255,255,255,0.07);
+    transform: translateY(-2px);
+  }
+  /* Join IP popup */
+  .ip-modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+    align-items: center; justify-content: center;
+  }
+  .ip-modal-overlay.open { display: flex; }
+  .ip-modal {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    max-width: 420px; width: 90%;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(74,222,30,0.2);
+    position: relative;
+  }
+  .ip-modal h3 {
+    font-family: 'Russo One', sans-serif;
+    color: var(--green); font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+  }
+  .ip-row {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem; gap: 0.5rem;
+  }
+  .ip-label { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .ip-value { color: var(--white); font-weight: 700; font-size: 0.95rem; font-family: monospace; }
+  .ip-copy {
+    background: var(--green); border: none; color: #000;
+    font-weight: 700; font-size: 0.75rem; padding: 0.35rem 0.75rem;
+    border-radius: 5px; cursor: pointer; white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .ip-copy:hover { background: #6aee3e; }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: none; border: none; color: var(--muted);
+    font-size: 1.4rem; cursor: pointer; line-height: 1;
+  }
+  .modal-close:hover { color: var(--white); }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-around;
+    flex-wrap: wrap; gap: 0.5rem;
+    padding: 1rem 2rem;
+  }
+  .status-item {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.5rem 1rem;
+  }
+  .status-icon { font-size: 1.3rem; color: var(--green); }
+  .status-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .status-value { font-size: 1rem; font-weight: 700; color: var(--white); }
+  .online-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: blink 1.8s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes blink {
+    0%,100% { opacity: 1; } 50% { opacity: 0.35; }
+  }
+  .copy-ip-btn {
+    background: var(--green); border: none; color: #000;
+    padding: 0.6rem 1.4rem; border-radius: 6px;
+    font-weight: 800; font-size: 0.8rem; letter-spacing: 0.06em;
+    text-transform: uppercase; cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    font-family: 'Exo 2', sans-serif;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .copy-ip-btn:hover { background: #6aee3e; box-shadow: 0 0 15px var(--green-glow); }
+
+  /* ── FEATURES ── */
+  .section { padding: 5rem 2rem; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-tag {
+    display: inline-block;
+    color: var(--green); font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .section-title {
+    font-family: 'Russo One', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    color: var(--white); margin-bottom: 0.75rem;
+  }
+  .section-sub { color: var(--muted); max-width: 520px; font-size: 0.95rem; }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem; margin-top: 3rem;
+  }
+  .feat-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 2rem 1.5rem;
+    text-align: center;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+    cursor: default;
+  }
+  .feat-card:hover {
+    border-color: var(--green);
+    box-shadow: 0 0 25px rgba(74,222,30,0.1);
+    transform: translateY(-3px);
+  }
+  .feat-icon { font-size: 2.2rem; margin-bottom: 1rem; display: block; }
+  .feat-name {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 800; font-size: 0.9rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--white); margin-bottom: 0.6rem;
+  }
+  .feat-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+
+  /* ── ABOUT ── */
+  #about { background: var(--surface); }
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center;
+    margin-top: 3rem;
+  }
+  .about-img-wrap {
+    position: relative;
+    border-radius: 16px; overflow: hidden;
+    border: 1px solid var(--border);
+    aspect-ratio: 4/3;
+  }
+  .about-img-wrap img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: brightness(0.7) saturate(0.7);
+  }
+  .about-img-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(74,222,30,0.06), transparent);
+  }
+  .about-badge {
+    position: absolute; bottom: 1rem; left: 1rem;
+    background: rgba(10,15,10,0.85);
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.5rem 0.85rem;
+    font-size: 0.8rem; color: var(--green); font-weight: 700;
+  }
+  .about-text p {
+    color: var(--muted); font-size: 1rem; line-height: 1.8;
+    margin-bottom: 1.2rem;
+  }
+  .about-text p strong { color: var(--green); }
+  .about-stats {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1rem; margin-top: 2rem;
+  }
+  .stat-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 1rem 1.25rem;
+  }
+  .stat-num {
+    font-family: 'Russo One', sans-serif;
+    font-size: 1.8rem; color: var(--green);
+    line-height: 1;
+  }
+  .stat-lbl { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+
+  /* ── STORE ── */
+  #store { background: var(--bg); }
+  .store-tabs {
+    display: flex; gap: 0.5rem; margin-top: 2.5rem; flex-wrap: wrap;
+  }
+  .store-tab {
+    padding: 0.5rem 1.25rem; border-radius: 6px;
+    font-weight: 700; font-size: 0.85rem; letter-spacing: 0.06em;
+    text-transform: uppercase; cursor: pointer; border: 1.5px solid var(--border);
+    background: transparent; color: var(--muted);
+    transition: all 0.2s;
+  }
+  .store-tab.active {
+    border-color: var(--green); color: var(--green);
+    background: rgba(74,222,30,0.08);
+  }
+  .store-panel { display: none; margin-top: 2rem; }
+  .store-panel.active { display: block; }
+  .store-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+  .store-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.75rem 1.5rem;
+    position: relative; overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+  }
+  .store-card:hover {
+    border-color: var(--green);
+    box-shadow: 0 0 30px rgba(74,222,30,0.12);
+    transform: translateY(-4px);
+  }
+  .store-card-glow {
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+  }
+  .store-card-icon { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
+  .store-card-name {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 800; font-size: 1rem; color: var(--white);
+    margin-bottom: 0.35rem;
+  }
+  .store-card-qty { font-size: 0.82rem; color: var(--muted); margin-bottom: 1rem; }
+  .store-card-price {
+    font-family: 'Russo One', sans-serif;
+    font-size: 1.5rem; color: var(--green);
+  }
+  .store-card-price span { font-size: 0.85rem; color: var(--muted); font-family: 'Inter', sans-serif; font-weight: 400; }
+  .store-card-info {
+    margin-top: 1rem; padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem; color: var(--muted); line-height: 1.6;
+  }
+  .store-card-info li { list-style: none; padding-left: 0; }
+  .store-card-info li::before { content: '✦ '; color: var(--green); }
+  .rank-badge {
+    display: inline-block;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 4px;
+    margin-bottom: 0.75rem;
+  }
+  .badge-vip { background: rgba(74,222,30,0.15); color: var(--green); border: 1px solid rgba(74,222,30,0.4); }
+  .badge-elite { background: rgba(100,160,255,0.12); color: #7ab4ff; border: 1px solid rgba(100,160,255,0.35); }
+
+  /* ── RULES ── */
+  #rules { background: var(--surface); }
+  .rules-list {
+    margin-top: 2.5rem;
+    display: grid; gap: 1rem;
+  }
+  .rule-item {
+    display: flex; align-items: flex-start; gap: 1rem;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.25rem 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .rule-item:hover { border-color: rgba(74,222,30,0.35); }
+  .rule-num {
+    font-family: 'Russo One', sans-serif;
+    font-size: 1.2rem; color: var(--green);
+    min-width: 36px;
+  }
+  .rule-text { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+  .rule-text strong { color: var(--white); display: block; margin-bottom: 0.2rem; }
+
+  /* ── DISCORD ── */
+  #discord {
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(88,101,242,0.08), transparent);
+    border-top: 1px solid var(--border);
+    padding: 5rem 2rem; text-align: center;
+  }
+  .discord-icon { font-size: 3.5rem; margin-bottom: 1rem; display: block; }
+  .discord-title {
+    font-family: 'Russo One', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    color: var(--white); margin-bottom: 0.75rem;
+  }
+  .discord-sub { color: var(--muted); margin-bottom: 2rem; max-width: 400px; margin-left: auto; margin-right: auto; }
+  .btn-discord {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    background: #5865F2; color: #fff;
+    font-weight: 800; font-size: 1rem; letter-spacing: 0.06em;
+    padding: 0.85rem 2.2rem; border-radius: 10px;
+    text-decoration: none; text-transform: uppercase;
+    font-family: 'Exo 2', sans-serif;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(88,101,242,0.35);
+  }
+  .btn-discord:hover {
+    background: #4752c4; transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(88,101,242,0.5);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--surface); border-top: 1px solid var(--border);
+    padding: 2rem; text-align: center;
+    color: var(--muted); font-size: 0.82rem;
+  }
+  footer a { color: var(--green); text-decoration: none; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
+    background: var(--green); color: #000;
+    font-weight: 700; padding: 0.75rem 1.25rem;
+    border-radius: 8px; font-size: 0.85rem;
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 0 1.5rem; }
+    .nav-links { display: none; flex-direction: column; position: fixed; top: 64px; left: 0; right: 0; background: rgba(10,15,10,0.97); padding: 1.5rem 2rem; gap: 1.25rem; border-bottom: 1px solid var(--border); }
+    .nav-links.open { display: flex; }
+    .hamburger { display: flex; }
+    .about-grid { grid-template-columns: 1fr; }
+    .about-img-wrap { aspect-ratio: 16/7; }
+  }
+  @media (max-width: 600px) {
+    nav { padding: 0 1rem; }
+    .status-bar { flex-direction: column; align-items: flex-start; gap: 0; }
+    .status-item { padding: 0.4rem 0; }
+    .hero-btns { flex-direction: column; align-items: center; }
+    .btn-primary, .btn-secondary { width: 240px; justify-content: center; }
+    .section { padding: 3.5rem 1.25rem; }
+    .about-stats { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" href="#home">
+    <img src="https://cdn.discordapp.com/icons/1479448352222609430/8f778db36081d60847b527490bb62b3b.webp?size=2048" alt="KadduMC Logo">
+    <span>KADDU <b>MC</b></span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#home" class="active">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#store">Store</a></li>
+    <li><a href="#rules">Rules</a></li>
+    <li><a href="https://discord.gg/YSmY247aYX" target="_blank">Discord</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:1rem">
+    <a class="btn-join-nav" href="https://discord.gg/YSmY247aYX" target="_blank">Join Now ›</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-bg-img"></div>
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <img class="hero-logo" src="https://cdn.discordapp.com/icons/1479448352222609430/8f778db36081d60847b527490bb62b3b.webp?size=2048" alt="KadduMC">
+    <h1 class="hero-title">KADDU<span class="mc">MC</span></h1>
+    <p class="hero-tagline"><span class="accent">Survive.</span> Build. Conquer.</p>
+    <p class="hero-sub">A <span class="highlight">Minecraft</span> Server Like No Other.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="openIPModal()">
+        ⛏ Join Server
+      </button>
+      <a class="btn-secondary" href="https://discord.gg/YSmY247aYX" target="_blank">
+        💬 Discord
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <div class="status-item">
+    <div class="online-dot"></div>
+    <div>
+      <div class="status-label">Server IP</div>
+      <div class="status-value">play.kaddumc.qzz.io</div>
+    </div>
+  </div>
+  <div class="status-item">
+    <div class="status-icon">👥</div>
+    <div>
+      <div class="status-label">Players Online</div>
+      <div class="status-value" id="playerCount">Loading…</div>
+    </div>
+  </div>
+  <div class="status-item">
+    <div class="status-icon">📡</div>
+    <div>
+      <div class="status-label">Server Version</div>
+      <div class="status-value">All Versions</div>
+    </div>
+  </div>
+  <button class="copy-ip-btn" onclick="copyIP()">
+    📋 Copy IP
+  </button>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="section-inner">
+    <span class="section-tag">What we offer</span>
+    <h2 class="section-title">Why KadduMC?</h2>
+    <p class="section-sub">Everything you need for an epic Minecraft experience — right here, right now.</p>
+    <div class="features-grid">
+      <div class="feat-card">
+        <span class="feat-icon">⚔️</span>
+        <div class="feat-name">Survival</div>
+        <p class="feat-desc">Explore a vast world, gather resources and survive with your friends.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">👑</span>
+        <div class="feat-name">Ranks</div>
+        <p class="feat-desc">Unlock powerful ranks and enjoy exclusive perks and commands.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">📅</span>
+        <div class="feat-name">Events</div>
+        <p class="feat-desc">Join exciting events and win amazing rewards regularly.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">👨‍👩‍👦</span>
+        <div class="feat-name">Community</div>
+        <p class="feat-desc">A friendly and active community that feels like a family.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div class="section-inner">
+    <span class="section-tag">Our Story</span>
+    <h2 class="section-title">About KadduMC</h2>
+    <div class="about-grid">
+      <div class="about-img-wrap">
+        <img src="https://images.unsplash.com/photo-1627856013091-fed6dc8a715d?w=800&q=80" alt="Minecraft world">
+        <div class="about-img-overlay"></div>
+        <div class="about-badge">🗓 Founded March 6, 2026</div>
+      </div>
+      <div class="about-text">
+        <p>This SMP was founded on <strong>6 March 2026</strong> by <strong>Yash Raj</strong>. His creative vision brought everyone together and started to take the shape of what we are today.</p>
+        <p>It is not just an SMP — it is also the <strong>emotion of every player</strong> who plays in it. A place where friendships are forged, adventures are lived, and memories are made block by block.</p>
+        <div class="about-stats">
+          <div class="stat-box">
+            <div class="stat-num">6</div>
+            <div class="stat-lbl">March 2026 — Founded</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num" id="statPlayers">—</div>
+            <div class="stat-lbl">Players Online Now</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">500</div>
+            <div class="stat-lbl">Max Capacity</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">∞</div>
+            <div class="stat-lbl">Versions Supported</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STORE -->
+<section class="section" id="store">
+  <div class="section-inner">
+    <span class="section-tag">Support us</span>
+    <h2 class="section-title">Store</h2>
+    <p class="section-sub">Unlock keys, crystals, and exclusive ranks to enhance your KadduMC experience.</p>
+    <div class="store-tabs">
+      <button class="store-tab active" onclick="switchTab('keys',this)">🗝 Keys</button>
+      <button class="store-tab" onclick="switchTab('ranks',this)">👑 Ranks</button>
+    </div>
+
+    <!-- KEYS PANEL -->
+    <div class="store-panel active" id="panel-keys">
+      <div class="store-grid">
+        <div class="store-card">
+          <div class="store-card-glow"></div>
+          <span class="store-card-icon">🗝</span>
+          <div class="store-card-name">Common Key</div>
+          <div class="store-card-qty">2x Keys per purchase</div>
+          <div class="store-card-price">₹5 <span>/ 2 keys</span></div>
+          <div class="store-card-info">
+            <ul>
+              <li>Great for new players</li>
+              <li>Opens common crates</li>
+              <li>Instant delivery</li>
+            </ul>
+          </div>
+        </div>
+        <div class="store-card">
+          <div class="store-card-glow"></div>
+          <span class="store-card-icon">🔑</span>
+          <div class="store-card-name">VIP Key</div>
+          <div class="store-card-qty">2x Keys per purchase</div>
+          <div class="store-card-price">₹15 <span>/ 2 keys</span></div>
+          <div class="store-card-info">
+            <ul>
+              <li>Opens VIP crates</li>
+              <li>Better loot pool</li>
+              <li>Exclusive items</li>
+            </ul>
+          </div>
+        </div>
+        <div class="store-card">
+          <div class="store-card-glow"></div>
+          <span class="store-card-icon">💎</span>
+          <div class="store-card-name">Crystal Key</div>
+          <div class="store-card-qty">1x Key per purchase</div>
+          <div class="store-card-price">₹15 <span>/ 1 key</span></div>
+          <div class="store-card-info">
+            <ul>
+              <li>Opens crystal crates</li>
+              <li>Rarest loot available</li>
+              <li>Premium tier rewards</li>
+            </ul>
+          </div>
+        </div>
+        <div class="store-card">
+          <div class="store-card-glow"></div>
+          <span class="store-card-icon">🔮</span>
+          <div class="store-card-name">Crystals</div>
+          <div class="store-card-qty">20x Crystals — Extra</div>
+          <div class="store-card-price">₹12 <span>/ 20 crystals</span></div>
+          <div class="store-card-info">
+            <ul>
+              <li>In-server currency</li>
+              <li>Use in crystal shop</li>
+              <li>Trade with players</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RANKS PANEL -->
+    <div class="store-panel" id="panel-ranks">
+      <div class="store-grid">
+        <div class="store-card">
+          <div class="store-card-glow" style="background:linear-gradient(90deg,transparent,#4ade1e,transparent)"></div>
+          <span class="rank-badge badge-vip">VIP</span>
+          <div class="store-card-name">VIP Rank</div>
+          <div class="store-card-qty">Duration: 1 Week</div>
+          <div class="store-card-price">₹80 <span>/ week</span></div>
+          <div class="store-card-info">
+            <ul>
+              <li>1x VIP Kit</li>
+              <li>3x Home Limit</li>
+              <li>VIP Role in Discord</li>
+              <li>10x Crystals included</li>
+            </ul>
+          </div>
+        </div>
+        <div class="store-card">
+          <div class="store-card-glow" style="background:linear-gradient(90deg,transparent,#7ab4ff,transparent)"></div>
+          <span class="rank-badge badge-elite">ELITE</span>
+          <div class="store-card-name">Elite Rank</div>
+          <div class="store-card-qty">Duration: 1 Week</div>
+          <div class="store-card-price">₹150 <span>/ week</span></div>
+          <div class="store-card-info">
+            <ul>
+              <li>1x Elite Kit</li>
+              <li>4x Home Limit</li>
+              <li>Elite Role in Discord</li>
+              <li>20x Crystals included</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top:2rem;color:var(--muted);font-size:0.85rem;">
+      💬 To purchase, contact us on <a href="https://discord.gg/YSmY247aYX" target="_blank" style="color:var(--green);">Discord</a>. All prices in INR (₹).
+    </p>
+  </div>
+</section>
+
+<!-- RULES -->
+<section class="section" id="rules">
+  <div class="section-inner">
+    <span class="section-tag">Play fair</span>
+    <h2 class="section-title">Server Rules</h2>
+    <p class="section-sub">Follow these rules to keep KadduMC fun for everyone.</p>
+    <div class="rules-list">
+      <div class="rule-item">
+        <div class="rule-num">01</div>
+        <div class="rule-text"><strong>No Hacking / Cheating</strong>Xray, kill-aura, fly hacks, or any advantage-giving client modifications are strictly banned.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">02</div>
+        <div class="rule-text"><strong>Respect Every Player</strong>No harassment, hate speech, racism, or toxicity of any kind in chat or voice.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">03</div>
+        <div class="rule-text"><strong>No Griefing</strong>Destroying or stealing from other players' builds is not allowed without explicit permission.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">04</div>
+        <div class="rule-text"><strong>No Spamming</strong>Don't flood chat, use caps excessively, or advertise other servers.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">05</div>
+        <div class="rule-text"><strong>Listen to Staff</strong>Decisions made by moderators and admins are final. Open a ticket on Discord for disputes.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">06</div>
+        <div class="rule-text"><strong>Have Fun!</strong>This is a community built on passion. Enjoy yourself and help others do the same.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DISCORD CTA -->
+<section id="discord">
+  <span class="discord-icon">💬</span>
+  <h2 class="discord-title">Join Our Community</h2>
+  <p class="discord-sub">Chat, get support, stay updated on events, and connect with the KadduMC family.</p>
+  <a class="btn-discord" href="https://discord.gg/YSmY247aYX" target="_blank">
+    Join Discord Server
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 <strong style="color:var(--green)">KadduMC</strong> — play.kaddumc.qzz.io &nbsp;|&nbsp; 
+  Founded by Yash Raj &nbsp;|&nbsp;
+  <a href="https://discord.gg/YSmY247aYX" target="_blank">Discord</a></p>
+</footer>
+
+<!-- IP MODAL -->
+<div class="ip-modal-overlay" id="ipModal" onclick="closeIPModal(event)">
+  <div class="ip-modal">
+    <button class="modal-close" onclick="closeIPModalDirect()">✕</button>
+    <h3>⛏ Join KadduMC</h3>
+    <div class="ip-row">
+      <div>
+        <div class="ip-label">Java IP</div>
+        <div class="ip-value">play.kaddumc.qzz.io</div>
+      </div>
+      <button class="ip-copy" onclick="copyText('play.kaddumc.qzz.io')">Copy</button>
+    </div>
+    <div class="ip-row">
+      <div>
+        <div class="ip-label">Bedrock IP</div>
+        <div class="ip-value">play.kaddumc.qzz.io</div>
+      </div>
+      <button class="ip-copy" onclick="copyText('play.kaddumc.qzz.io')">Copy</button>
+    </div>
+    <div class="ip-row">
+      <div>
+        <div class="ip-label">Bedrock Port</div>
+        <div class="ip-value">19104</div>
+      </div>
+      <button class="ip-copy" onclick="copyText('19104')">Copy</button>
+    </div>
+    <div style="margin-top:1.25rem;color:var(--muted);font-size:0.82rem;">
+      Supports all Minecraft versions (Java & Bedrock)
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Copied!</div>
+
+<script>
+  // Hamburger
+  document.getElementById('hamburger').addEventListener('click',()=>{
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+
+  // Nav active on scroll
+  const sections = document.querySelectorAll('section[id], div.status-bar');
+  const navAs = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll',()=>{
+    let cur='';
+    document.querySelectorAll('section[id]').forEach(s=>{
+      if(window.scrollY>=s.offsetTop-120) cur=s.id;
+    });
+    navAs.forEach(a=>{
+      a.classList.toggle('active', a.getAttribute('href')==='#'+cur);
+    });
+  });
+
+  // Store tabs
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.store-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.store-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+tab).classList.add('active');
+  }
+
+  // IP Modal
+  function openIPModal(){ document.getElementById('ipModal').classList.add('open'); }
+  function closeIPModalDirect(){ document.getElementById('ipModal').classList.remove('open'); }
+  function closeIPModal(e){ if(e.target===document.getElementById('ipModal')) closeIPModalDirect(); }
+
+  // Copy functions
+  function copyIP(){ copyText('play.kaddumc.qzz.io'); }
+  function copyText(txt){
+    navigator.clipboard.writeText(txt).then(()=>showToast('✓ Copied: '+txt)).catch(()=>{
+      const ta=document.createElement('textarea');
+      ta.value=txt; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      showToast('✓ Copied: '+txt);
+    });
+  }
+  function showToast(msg){
+    const t=document.getElementById('toast');
+    t.textContent=msg; t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),2200);
+  }
+
+  // Live player count from Minecraft server status API
+  async function fetchPlayerCount() {
+    const ip = 'play.kaddumc.qzz.io';
+    const apiUrl = `https://api.mcstatus.io/v2/status/java/${ip}`;
+    try {
+      const res = await fetch(apiUrl);
+      const data = await res.json();
+      if (data && data.online && data.players) {
+        const online = data.players.online;
+        const max = data.players.max;
+        const txt = `${online} / ${max}`;
+        document.getElementById('playerCount').textContent = txt;
+        document.getElementById('statPlayers').textContent = online;
+      } else {
+        document.getElementById('playerCount').textContent = 'Offline';
+        document.getElementById('statPlayers').textContent = '—';
+      }
+    } catch(e) {
+      // Try Bedrock fallback
+      try {
+        const res2 = await fetch(`https://api.mcstatus.io/v2/status/bedrock/${ip}?port=19104`);
+        const d2 = await res2.json();
+        if(d2 && d2.online && d2.players){
+          const txt2 = `${d2.players.online} / ${d2.players.max}`;
+          document.getElementById('playerCount').textContent = txt2;
+          document.getElementById('statPlayers').textContent = d2.players.online;
+        } else {
+          document.getElementById('playerCount').textContent = '— / 500';
+          document.getElementById('statPlayers').textContent = '—';
+        }
+      } catch {
+        document.getElementById('playerCount').textContent = '— / 500';
+        document.getElementById('statPlayers').textContent = '—';
+      }
+    }
+  }
+  fetchPlayerCount();
+  setInterval(fetchPlayerCount, 60000);
+</script>
+</body>
+</html>
